@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package payments;
+
+enum Status {
+    PENDING = 0;
+    COMPLETE = 1;
+    FAILED = 2;
+}
+
+service Payments {
+    rpc Pay (Payment) returns (Payment) {}
+}
+
+message Payment {
+    string id = 1;
+    int64 amount = 2;
+    string from = 3;
+    string to = 4;
+    Status status = 5;
+}
