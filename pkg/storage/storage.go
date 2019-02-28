@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	pb "github.com/kimpettersen/svc-payments/proto"
 )
 
@@ -14,6 +15,7 @@ type Storage struct {
 func (s *Storage) StorePayment(paymentRequest *pb.Payment) (*pb.Payment, error) {
 	time.Sleep(5 * time.Second)
 	paymentRequest.Status = pb.Status_COMPLETE
+	paymentRequest.Id = uuid.New().String()
 	s.Payments = append(s.Payments, *paymentRequest)
 	return paymentRequest, nil
 }
