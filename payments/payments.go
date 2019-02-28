@@ -13,7 +13,6 @@ type PaymentsService struct{}
 
 func (p PaymentsService) Pay(ctx context.Context, in *pb.Payment) (*pb.Payment, error) {
 	s := storage.Storage{}
-	in.Status = pb.Status_PENDING
 	payment, err := s.StorePayment(in)
 	if err != nil {
 		errors.Wrap(err, "failed to create payment")
