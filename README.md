@@ -1,1 +1,2 @@
-This is a sample app of a gRPC server..
+# svc-payments
+Microservice to deal with a payment. Exposes a gRPC api
