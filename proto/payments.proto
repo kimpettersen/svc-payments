@@ -9,8 +9,23 @@ enum Status {
 }
 
 service Payments {
-    rpc Pay (Payment) returns (Payment) {}
+    rpc Pay (PaymentRequest) returns (Payment) {}
+    rpc Confirm(PaymentByIdRequest) returns (Payment) {}
+    rpc GetById(PaymentByIdRequest) returns (Payment) {}
+    rpc GetAll(AllPaymentsRequest) returns (PaymentList) {}
 }
+
+message PaymentRequest {
+    int64 amount = 2;
+    string from = 3;
+    string to = 4;
+}
+
+message PaymentByIdRequest {
+    string id = 1;
+}
+
+message AllPaymentsRequest {}
 
 message Payment {
     string id = 1;
@@ -18,4 +33,9 @@ message Payment {
     string from = 3;
     string to = 4;
     Status status = 5;
+}
+
+
+message PaymentList {
+    repeated Payment payments = 1;
 }

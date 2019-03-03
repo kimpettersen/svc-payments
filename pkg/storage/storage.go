@@ -2,35 +2,52 @@ package storage
 
 import (
 	"errors"
-	"time"
+	"log"
 
 	"github.com/google/uuid"
 	pb "github.com/kimpettersen/svc-payments/proto"
 )
 
-type Storage struct {
+type InMem struct {
 	Payments []*pb.Payment
 }
 
-func (s *Storage) StorePayment(paymentRequest *pb.Payment) (*pb.Payment, error) {
-	paymentRequest.Id = uuid.New().String()
-	s.Payments = append(s.Payments, paymentRequest)
-	paymentRequest.Status = pb.Status_PENDING
+func (i *InMem) StorePayment(paymentRequest *pb.PaymentRequest) (*pb.Payment, error) {
+	id := uuid.New().String()
+	payment := &pb.Payment{
+		Id:     id,
+		Status: pb.Status_PENDING,
+		Amount: paymentRequest.Amount,
+		From:   paymentRequest.From,
+		To:     paymentRequest.To,
+	}
 
-	go func() {
-		time.Sleep(5 * time.Second)
-		paymentRequest.Status = pb.Status_COMPLETE
-	}()
-
-	return paymentRequest, nil
+	i.Payments = append(i.Payments, payment)
+	log.Print(i.Payments)
+	return payment, nil
 }
 
-func (s *Storage) GetPaymentById(id string) (*pb.Payment, error) {
-
-	for _, payment := range s.Payments {
+func (i *InMem) GetPaymentById(id string) (*pb.Payment, error) {
+	for _, payment := range i.Payments {
 		if payment.Id == id {
 			return payment, nil
 		}
 	}
 	return nil, errors.New("Not found")
+}
+
+func (i *InMem) ConfirmPayment(id string) (*pb.Payment, error) {
+	payment, err := i.GetPaymentById(id)
+	if err != nil {
+		return nil, errors.New("Not found")
+	}
+	payment.Status = pb.Status_COMPLETE
+	return payment, nil
+}
+
+func (i *InMem) GetAllPayments() (*pb.PaymentList, error) {
+	log.Print(i.Payments)
+	return &pb.PaymentList{
+		Payments: i.Payments,
+	}, nil
 }

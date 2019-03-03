@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/kimpettersen/svc-payments/payments"
+	"github.com/kimpettersen/svc-payments/pkg/storage"
 	pb "github.com/kimpettersen/svc-payments/proto"
 	"google.golang.org/grpc"
 )
@@ -24,7 +25,11 @@ func main() {
 	s := grpc.NewServer()
 
 	// Register our implementation of PaymentsService
-	pb.RegisterPaymentsServer(s, payments.PaymentsService{})
+	svc := payments.PaymentsService{
+		Storage: &storage.InMem{},
+	}
+	pb.RegisterPaymentsServer(s, svc)
+
 	fmt.Printf("Starting server: %s\n", address)
 	if err := s.Serve(lis); err != nil {
 		log.Fatal("Failed to start server")
