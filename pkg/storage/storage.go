@@ -2,7 +2,6 @@ package storage
 
 import (
 	"errors"
-	"log"
 
 	"github.com/google/uuid"
 	pb "github.com/kimpettersen/svc-payments/proto"
@@ -23,7 +22,6 @@ func (i *InMem) StorePayment(paymentRequest *pb.PaymentRequest) (*pb.Payment, er
 	}
 
 	i.Payments = append(i.Payments, payment)
-	log.Print(i.Payments)
 	return payment, nil
 }
 
@@ -46,7 +44,6 @@ func (i *InMem) ConfirmPayment(id string) (*pb.Payment, error) {
 }
 
 func (i *InMem) GetAllPayments() (*pb.PaymentList, error) {
-	log.Print(i.Payments)
 	return &pb.PaymentList{
 		Payments: i.Payments,
 	}, nil

@@ -19,7 +19,6 @@ func (p PaymentsService) Pay(ctx context.Context, in *pb.PaymentRequest) (*pb.Pa
 	if err != nil {
 		return nil, err
 	}
-	log.Print(p.Storage)
 	return payment, nil
 }
 
